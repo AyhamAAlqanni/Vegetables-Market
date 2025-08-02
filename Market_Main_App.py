@@ -2,6 +2,56 @@
 # "*" means importing everything from this module.
 from tkinter import *
 
+from Page_Layout_Class import PageLayout
+
+# Vegetable Add Page Setup.
+def vegetable_add_page(pages):
+
+    add_page = PageLayout(pages, "add")
+
+    add_page.add_field("Vegetable Name", 1, 0, 20)
+    add_page.add_field("Supplier Name", 1, 2, 0)
+    add_page.add_field("Price/lb", 2, 0, 0)
+    add_page.add_field("Date", 2, 2, 0, is_date = True)
+
+    add_page.add_button("Add Vegetable", 3, 0, 20)
+    add_page.add_button("Clear Fields", 3, 1, 0)
+
+    add_page.vegetables_list(4, 0)
+
+
+# Vegetable Update Page Setup.
+def vegetable_update_page(pages):
+
+    add_page = PageLayout(pages, "update")
+
+    add_page.add_field("Vegetable Name", 1, 0, 20)
+    add_page.add_field("Supplier Name", 1, 2, 0)
+    add_page.add_field("Price/lb", 2, 0, 0)
+    add_page.add_field("Date", 2, 2, 0, is_date = True)
+
+    add_page.add_button("Update Vegetable", 3, 0, 20)
+    add_page.add_button("Clear Fields", 3, 1, 0)
+
+    add_page.vegetables_list(4, 0)
+
+
+# Vegetable Delete Page Setup.
+def vegetable_delete_page(pages):
+
+    add_page = PageLayout(pages, "delete")
+
+    add_page.add_field("Vegetable Name", 1, 0, 20)
+    add_page.add_field("Supplier Name", 1, 2, 0)
+    add_page.add_field("Price/lb", 2, 0, 0)
+    add_page.add_field("Date", 2, 2, 0, is_date = True)
+
+    add_page.add_button("Delete Vegetable", 3, 0, 20)
+    add_page.add_button("Clear Fields", 3, 1, 0)
+
+    add_page.vegetables_list(4, 0)
+
+
 # Hover effect functions.
 def on_enter(event):
     event.widget['background'] = '#9a1717'
@@ -23,17 +73,17 @@ def create_pages(app):
     pages = {}
 
     for name in ["main", "list", "add", "update", "delete"]:
-        page = Frame(app, bg="white")
+        page = Frame(app, bg="#e0ffe0")
         page.place(relwidth=1, relheight=1)  # Fill the entire window
         pages[name] = page
 
         # Simple label for each page
         label = Label(page, text=f"This is the {name.capitalize()} Page", font=("Arial", 20), bg="white")
-        label.pack(pady=30)
+        #label.grid()
 
         # Back button to return to main page
         if name != "main":
-            Button(page, text="Back", command=lambda: frame_display(pages["main"])).pack()
+            Button(page, text="Back", command=lambda: frame_display(pages["main"])).grid(row = 0, column = 0)
 
     return pages
 
@@ -122,6 +172,10 @@ def main():
 
     # Show main page initially
     frame_display(pages["main"])
+
+    vegetable_add_page(pages)
+    vegetable_update_page(pages)
+    vegetable_delete_page(pages)
 
     # Starting Program.
     app.mainloop()
