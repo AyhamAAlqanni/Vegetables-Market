@@ -113,6 +113,16 @@ class PageFunctions:
         # Sample row
         # vegetables_list.insert(END, f"{'Tomato':<20} {'Green Farm':<20} {'2.50':<10} {'2025-08-02'}")
 
+    def vegetables_list_counter(self):
+
+        vegetables_counter = 0
+
+        for vegetable in get_vegetables():
+
+            vegetables_counter += 1
+
+        return vegetables_counter + 1
+
         
     def add_button_handle(self):
         
@@ -146,7 +156,9 @@ class PageFunctions:
         # Convert 'MM/DD/YYYY' or 'DD/MM/YYYY' to 'YYYY-MM-DD HH:MM:SS'
         date = datetime.strptime(date, "%m/%d/%y").strftime("%Y-%m-%d") #%H:%M:%S
 
-        add_vegetable(vegetable_name, supplier_name, float(price), date)
+        vegetable_number = self.vegetables_list_counter()
+
+        add_vegetable(vegetable_number, vegetable_name, supplier_name, float(price), date)
 
         self.refresh_vegetables_list()
 
@@ -192,7 +204,7 @@ class PageFunctions:
 
     def update_button_handle(self):
 
-        #print(selected_item[0])
+        #print(selected_item[1])
 
         update_vegetable(selected_item[0], self.vegetable_name_entry.get(), self.supplier_name_entry.get(), 
                          self.price_entry.get(), self.date_entry.get())

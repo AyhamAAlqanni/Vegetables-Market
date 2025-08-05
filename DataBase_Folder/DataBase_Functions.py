@@ -10,13 +10,13 @@ from mysql.connector import Error
 
 
 # Purpose: Adds a new row to the vegetables table.
-def add_vegetable(vegetable_name, supplier_name, price, added_date):
+def add_vegetable(vegetable_number, vegetable_name, supplier_name, price, added_date):
 
     try:
 
-        sql = "INSERT INTO vegetables(vegetable_name, supplier_name, price, added_date) VALUES (%s, %s, %s, %s)"
+        sql = "INSERT INTO vegetables(vegetable_number, vegetable_name, supplier_name, price, added_date) VALUES (%s, %s, %s, %s, %s)"
 
-        cursor.execute(sql, (vegetable_name, supplier_name, price, added_date))
+        cursor.execute(sql, (vegetable_number, vegetable_name, supplier_name, price, added_date))
 
         database.commit()
         

@@ -5,6 +5,15 @@ from tkinter import messagebox
 from Page_Layout_Functions import PageFunctions
 
 
+def vegetable_list_page(pages):
+
+    list_page = PageFunctions(pages, "list")
+
+    list_page.buttons("Refresh List", 2, 1, 20, "refresh")
+
+    list_page.vegetables_list(4, 0)
+
+
 def vegetable_add_page(pages):
 
     add_page = PageFunctions(pages, "add")
@@ -170,6 +179,7 @@ def main():
     # Show main page initially
     frame_display(pages["main"])
 
+    vegetable_list_page(pages)
     vegetable_add_page(pages)
     vegetable_update_page(pages)
     vegetable_delete_page(pages)
