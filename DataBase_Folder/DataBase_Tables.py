@@ -12,7 +12,7 @@ TABLES = {}
 # Adds a table definition for a table named vegetables.
 TABLES["vegetables"] = (
     "CREATE TABLE `vegetables` ("
-    "`vegetable_number` INT(11) AUTO_INCREMENT,"
+    "`vegetable_number` INT(11) NOT NULL,"
     "`vegetable_name` VARCHAR(250) NOT NULL,"
     "`supplier_name` VARCHAR(250) NOT NULL,"
     "`price` FLOAT NOT NULL,"
