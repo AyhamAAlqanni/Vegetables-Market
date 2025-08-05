@@ -13,6 +13,7 @@ class PageLayout:
             "background": "#e0ffe0",
             "foreground": "black"
         }
+        self.user_input_text = ""
 
 
     def add_field(self, label_text, row_number, column_number, pady_number, is_date = False):
@@ -26,13 +27,15 @@ class PageLayout:
 
         else:
 
-            user_input_text = StringVar()
-            field_entry = Entry(self.frame, textvariable = user_input_text)
+            self.user_input_text = StringVar()
+            field_entry = Entry(self.frame, textvariable = self.user_input_text)
 
         field_entry.grid(row = row_number, column = column_number + 1)
 
+        return field_entry
 
-    def add_button(self, button_name, row_number, column_number, pady_number):
+
+    def add_button(self, button_name, row_number, column_number, pady_number, command=None):
 
          # Hover effect functions.
         def on_enter(event):
@@ -43,7 +46,7 @@ class PageLayout:
             event.widget['background'] = '#60CC80'
             event.widget['foreground'] = 'black'
 
-        button = Button(self.frame, text = button_name, width = 15)
+        button = Button(self.frame, text = button_name, width = 15, command = command)
         button.grid(row = row_number, column = column_number, pady = pady_number)
         button.bind("<Enter>", on_enter)
         button.bind("<Leave>", on_leave)
@@ -51,6 +54,14 @@ class PageLayout:
 
     def vegetables_list(self, row_number, column_number):
 
+        # Scrollbar for usability
+        scrollbar = Scrollbar(self.frame)
+        scrollbar.grid(row=row_number, column=column_number + 3, rowspan=6, sticky="ns")
+
         # Vegetables List (Listbox)
-        vegetables_list = Listbox(self.frame, height = 8, width = 80, border = 3)
+        vegetables_list = Listbox(self.frame, height = 8, width = 60, border = 3, font = ("bold", 10), yscrollcommand=scrollbar.set)
         vegetables_list.grid(row = row_number, column = column_number, columnspan = 3, rowspan = 6, padx = 20)
+
+        scrollbar.config(command=vegetables_list.yview)
+
+        return vegetables_list
