@@ -1,21 +1,19 @@
 
 # "*" means importing everything from this module.
 from tkinter import *
+from tkinter import messagebox
+from Page_Layout_Functions import PageFunctions
 
-from Page_Layout_Class import PageLayout
 
-# Vegetable Add Page Setup.
 def vegetable_add_page(pages):
 
-    add_page = PageLayout(pages, "add")
+    add_page = PageFunctions(pages, "add")
 
-    add_page.add_field("Vegetable Name", 1, 0, 20)
-    add_page.add_field("Supplier Name", 1, 2, 0)
-    add_page.add_field("Price/lb", 2, 0, 0)
-    add_page.add_field("Date", 2, 2, 0, is_date = True)
+    add_page.fields()
 
-    add_page.add_button("Add Vegetable", 3, 0, 20)
-    add_page.add_button("Clear Fields", 3, 1, 0)
+    add_page.buttons("Add Vegetable", 3, 0, 20, "add")
+    add_page.buttons("Clear Fields", 3, 1, 0, "clear")
+    add_page.buttons("Refresh List", 3, 2, 0, "refresh")
 
     add_page.vegetables_list(4, 0)
 
@@ -23,33 +21,32 @@ def vegetable_add_page(pages):
 # Vegetable Update Page Setup.
 def vegetable_update_page(pages):
 
-    add_page = PageLayout(pages, "update")
+    update_page = PageFunctions(pages, "update")
 
-    add_page.add_field("Vegetable Name", 1, 0, 20)
-    add_page.add_field("Supplier Name", 1, 2, 0)
-    add_page.add_field("Price/lb", 2, 0, 0)
-    add_page.add_field("Date", 2, 2, 0, is_date = True)
+    update_page.fields()
 
-    add_page.add_button("Update Vegetable", 3, 0, 20)
-    add_page.add_button("Clear Fields", 3, 1, 0)
+    update_page.buttons("Update Vegetable", 3, 0, 20, "update")
+    update_page.buttons("Clear Fields", 3, 1, 0, "clear")
+    update_page.buttons("Refresh List", 3, 2, 0, "refresh")
 
-    add_page.vegetables_list(4, 0)
+    update_page.vegetables_list(4, 0)
 
 
 # Vegetable Delete Page Setup.
 def vegetable_delete_page(pages):
 
-    add_page = PageLayout(pages, "delete")
+    delete_page = PageFunctions(pages, "delete")
 
-    add_page.add_field("Vegetable Name", 1, 0, 20)
-    add_page.add_field("Supplier Name", 1, 2, 0)
-    add_page.add_field("Price/lb", 2, 0, 0)
-    add_page.add_field("Date", 2, 2, 0, is_date = True)
+    delete_page.fields()
 
-    add_page.add_button("Delete Vegetable", 3, 0, 20)
-    add_page.add_button("Clear Fields", 3, 1, 0)
+    delete_page.buttons("Delete Vegetable", 3, 0, 20, "delete")
+    delete_page.buttons("Clear Fields", 3, 1, 0, "clear")
+    delete_page.buttons("Refresh List", 3, 2, 0, "refresh")
 
-    add_page.vegetables_list(4, 0)
+    delete_page.vegetables_list(4, 0)
+
+    #add_page.add_button("Delete Vegetable", 3, 0, 20)
+    #add_page.add_button("Clear Fields", 3, 1, 0)
 
 
 # Hover effect functions.
