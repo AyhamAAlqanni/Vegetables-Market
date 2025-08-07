@@ -21,6 +21,20 @@ TABLES["vegetables"] = (
     ") ENGINE=InnoDB"
 )
 
+# Adds a table definition for a table named customers.
+TABLES["customers"] = (
+    "CREATE TABLE `customers` ("
+    "`transaction_id` INT(11) NOT NULL,"
+    "`customers_name` VARCHAR(250) NOT NULL,"
+    "`vegetable_name` VARCHAR(250) NOT NULL,"
+    "`supplier_name` VARCHAR(250) NOT NULL,"
+    "`quantity` FLOAT NOT NULL,"
+    "`total_price` FLOAT NOT NULL,"
+    "`buy_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+    "PRIMARY KEY (`transaction_id`)"
+    ") ENGINE=InnoDB"
+)
+
 
 # Executes a SQL command to create the database if it doesn't already exist.
 def create_database():

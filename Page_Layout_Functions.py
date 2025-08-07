@@ -23,6 +23,10 @@ class PageFunctions:
         self.price_entry = ""
         self.date_entry = ""
         self.vegetables = ""
+        self.customer_name_entry = ""
+        self.quantity_entry = ""
+        self.total_price_entry = ""
+        self.total_price_input = 0
 
 
     def fields(self):
@@ -55,6 +59,37 @@ class PageFunctions:
         self.date_entry.grid(row = 2, column = 3)
 
 
+    def buy_fields(self):
+
+        # Customer Name Field.
+        customer_name_label = Label(self.frame, text = "Customer Name", pady = 20, **self.label_style)
+        customer_name_label.grid(row = 1, column = 0)
+        customer_name_input = StringVar()
+        self.customer_name_entry = Entry(self.frame, textvariable = customer_name_input)
+        self.customer_name_entry.grid(row = 1, column = 1)
+
+        # Vegetable Name Field.
+        vegetable_name_label = Label(self.frame, text = "Vegetable Name", pady = 20, **self.label_style)
+        vegetable_name_label.grid(row = 1, column = 2)
+        vegetable_name_input = StringVar()
+        self.vegetable_name_entry = Entry(self.frame, textvariable = vegetable_name_input)
+        self.vegetable_name_entry.grid(row = 1, column = 3)
+
+        # Quantity Field.
+        quantity_label = Label(self.frame, text = "Quantity", **self.label_style)
+        quantity_label.grid(row = 2, column = 0)
+        quantity_input = StringVar()
+        self.quantity_entry = Entry(self.frame, textvariable = quantity_input)
+        self.quantity_entry.grid(row = 2, column = 1)
+
+        # Total Price Field.
+        total_price_label = Label(self.frame, text = "Total Price", **self.label_style)
+        total_price_label.grid(row = 2, column = 2)
+        self.total_price_input = StringVar()
+        self.total_price_entry = Entry(self.frame, textvariable = self.total_price_input)
+        self.total_price_entry.grid(row = 2, column = 3)
+
+
     # Hover effect functions.
     def on_enter(self, event):
         event.widget['background'] = '#9a1717'
@@ -73,7 +108,9 @@ class PageFunctions:
                                 "update" : self.update_button_handle,
                                 "delete" : self.delete_button_handle,
                                 "refresh" : self.refresh_vegetables_list,
-                                "show picture" : self.picture_button_handle}
+                                "show picture" : self.picture_button_handle,
+                                "buy" : self.buy_button_handle,
+                                "total price" : self.total_price_button_handle}
 
         # Add Button.
         add_button = Button(self.frame, text = button_name, width = 15, command = functions_dictionary[command])
@@ -201,6 +238,10 @@ class PageFunctions:
 
             pass
 
+        except AttributeError:
+
+            pass
+
             #parts_list.bind("<<ListboxSelect>>", select_item)
 
 
@@ -233,3 +274,88 @@ class PageFunctions:
         url = "https://www.pexels.com/search/" + selected_item[1] # https://google.com/search?q=
 
         webbrowser.get().open(url)
+
+
+    def customers_list_counter(self):
+
+        customers_counter = 0
+
+        for customer in get_customers():
+
+            customers_counter += 1
+
+        return customers_counter + 1
+    
+
+    def total_price_button_handle(self):
+
+        quantity = self.quantity_entry.get()
+        total_price = float(selected_item[3])
+
+        # 2. Check if quantity is a valid float
+        try:
+            
+            quantity_value = float(quantity)
+            
+            if quantity_value < 0:
+                
+                raise ValueError
+        
+        except ValueError:
+            
+            messagebox.showerror("Input Error", "Price must be a positive number.")
+            
+            return
+        
+        total_price *= float(quantity)
+
+        self.total_price_entry.delete(0, END)
+        self.total_price_entry.insert(END, total_price)
+
+
+    def buy_button_handle(self):
+
+        customer_name = self.customer_name_entry.get()
+        vegetable_name = self.vegetable_name_entry.get()
+        supplier_name = selected_item[2]
+        quantity = self.quantity_entry.get()
+        total_price = float(selected_item[3])
+
+        # 1. Check for empty fields
+        if customer_name == "" or vegetable_name == "" or quantity == "":
+
+            messagebox.showerror("Required Fields!", "Please Include All Fields")
+
+            return
+        
+        # 2. Check if quantity is a valid float
+        try:
+            
+            quantity_value = float(quantity)
+            
+            if quantity_value < 0:
+                
+                raise ValueError
+        
+        except ValueError:
+            
+            messagebox.showerror("Input Error", "Price must be a positive number.")
+            
+            return
+
+        transaction_number = self.customers_list_counter()
+
+        total_price *= float(quantity)
+
+        # 3. Confirmation message before completing the purchase
+        confirm = messagebox.askyesno("Confirm Purchase", 
+        f"Do you want to buy {quantity_value} lb of {vegetable_name} from {supplier_name} for a total of ${total_price:.2f}?")
+
+        if confirm:
+            add_customer_transaction(transaction_number, customer_name, vegetable_name, supplier_name, quantity_value, total_price)
+            messagebox.showinfo("Purchase Successful", "The transaction was completed successfully.")
+
+        #self.total_price_entry.delete(0, END)
+        #self.total_price_entry.insert(END, total_price)
+
+        #add_customer_transaction(transaction_number, customer_name, vegetable_name, supplier_name, quantity, total_price)

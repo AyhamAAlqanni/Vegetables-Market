@@ -42,7 +42,7 @@ def get_vegetables():
 
     except Error as err:
 
-        print(f"Error Getting Users: {err}")
+        print(f"Error Getting Vegetables: {err}")
 
 
 # Purpose: Retrieves a single vegetable by vegetable number.
@@ -84,6 +84,42 @@ def delete_vegetable(vegetable_number):
     cursor.execute(sql, (vegetable_number,))
 
     database.commit()
+
+
+# Purpose: Adds a new row to the customers table.
+def add_customer_transaction(transaction_id, customers_name, vegetable_name, supplier_name, quantity, total_price):
+
+    try:
+
+        sql = "INSERT INTO customers(transaction_id, customers_name, vegetable_name, supplier_name, quantity, total_price) VALUES (%s, %s, %s, %s, %s, %s)"
+
+        cursor.execute(sql, (transaction_id, customers_name, vegetable_name, supplier_name, quantity, total_price))
+
+        database.commit()
+        
+    except Error as err:
+
+        print(f"Error Adding Customer: {err}")
+
+
+# Purpose: Fetches all customers entries, ordered by oldest first.
+# row[1] refers to the text column (since row[0] is transaction_id).
+# NOTE: It doesn't print all details, only the text.
+def get_customers():
+
+    try:
+
+        sql = ("SELECT * FROM customers ORDER BY transaction_id ASC")
+
+        cursor.execute(sql)
+
+        result = cursor.fetchall()
+
+        return list(result)
+
+    except Error as err:
+
+        print(f"Error Getting Customers: {err}")
 
 
 # Purpose: Adds a new row to the transactions table.
