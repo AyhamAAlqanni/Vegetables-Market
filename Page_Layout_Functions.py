@@ -4,6 +4,7 @@ from tkcalendar import DateEntry
 from tkinter import messagebox
 from datetime import datetime
 from DataBase_Folder.DataBase_Functions import *
+import webbrowser
 
 class PageFunctions:
 
@@ -71,7 +72,8 @@ class PageFunctions:
                                 "clear" : self.clear_button_handle,
                                 "update" : self.update_button_handle,
                                 "delete" : self.delete_button_handle,
-                                "refresh" : self.refresh_vegetables_list}
+                                "refresh" : self.refresh_vegetables_list,
+                                "show picture" : self.picture_button_handle}
 
         # Add Button.
         add_button = Button(self.frame, text = button_name, width = 15, command = functions_dictionary[command])
@@ -224,3 +226,10 @@ class PageFunctions:
         delete_vegetable(selected_item[0])
 
         self.refresh_vegetables_list()
+
+
+    def picture_button_handle(self):
+
+        url = "https://www.pexels.com/search/" + selected_item[1] # https://google.com/search?q=
+
+        webbrowser.get().open(url)
