@@ -14,6 +14,10 @@ def vegetable_list_page(pages):
     list_page.buttons("Show Picture", 3, 0, 20, "show picture")
     list_page.buttons("Refresh List", 3, 1, 20, "refresh")
 
+    # Add back button to return to main page
+    back_button = Button(pages["list"], text = "Back", command = lambda: frame_display(pages["main"]))
+    back_button.grid(row = 0, column = 0, sticky = "w")
+
     list_page.vegetables_list(4, 0)
 
 
@@ -27,6 +31,10 @@ def vegetable_buy_page(pages):
     buy_page.buttons("Buy", 3, 1, 20, "buy")
     buy_page.buttons("Refresh List", 3, 2, 20, "refresh")
 
+    # Add back button to return to main page
+    back_button = Button(pages["buy"], text = "Back", command = lambda: frame_display(pages["main"]))
+    back_button.grid(row = 0, column = 0, sticky = "w")
+
     buy_page.vegetables_list(4, 0)
 
 
@@ -39,6 +47,10 @@ def vegetable_add_page(pages):
     add_page.buttons("Add Vegetable", 3, 0, 20, "add")
     add_page.buttons("Clear Fields", 3, 1, 0, "clear")
     add_page.buttons("Refresh List", 3, 2, 0, "refresh")
+
+    # Add back button to return to main page
+    back_button = Button(pages["add"], text = "Back", command = lambda: frame_display(pages["main"]))
+    back_button.grid(row = 0, column = 0, sticky = "w")
 
     add_page.vegetables_list(4, 0)
 
@@ -54,6 +66,10 @@ def vegetable_update_page(pages):
     update_page.buttons("Clear Fields", 3, 1, 0, "clear")
     update_page.buttons("Refresh List", 3, 2, 0, "refresh")
 
+    # Add back button to return to main page
+    back_button = Button(pages["update"], text = "Back", command = lambda: frame_display(pages["main"]))
+    back_button.grid(row = 0, column = 0, sticky = "w")
+
     update_page.vegetables_list(4, 0)
 
 
@@ -68,10 +84,30 @@ def vegetable_delete_page(pages):
     delete_page.buttons("Clear Fields", 3, 1, 0, "clear")
     delete_page.buttons("Refresh List", 3, 2, 0, "refresh")
 
+    # Add back button to return to main page
+    back_button = Button(pages["delete"], text = "Back", command = lambda: frame_display(pages["main"]))
+    back_button.grid(row = 0, column = 0, sticky = "w")
+
     delete_page.vegetables_list(4, 0)
 
     #add_page.add_button("Delete Vegetable", 3, 0, 20)
     #add_page.add_button("Clear Fields", 3, 1, 0)
+
+
+def transaction_list_page(pages):
+
+    transaction_list_page = PageFunctions(pages, "transaction")
+
+    #list_page.fields()
+
+    #list_page.buttons("Show Picture", 3, 0, 20, "show picture")
+    #list_page.buttons("Refresh List", 3, 1, 20, "refresh")
+
+    # Add back button to return to main page
+    back_button = Button(pages["transaction"], text = "Back", command = lambda: frame_display(pages["main"]))
+    back_button.grid(row = 0, column = 0, sticky = "w")
+
+    transaction_list_page.transactions_list(4, 0)
 
 
 # Hover effect functions.
@@ -94,7 +130,7 @@ def frame_display(frame):
 def create_pages(app):
     pages = {}
 
-    for name in ["main", "list", "buy", "add", "update", "delete"]:
+    for name in ["main", "list", "buy", "add", "update", "delete", "transaction"]:
         page = Frame(app, bg="#e0ffe0")
         page.place(relwidth=1, relheight=1)  # Fill the entire window
         pages[name] = page
@@ -104,8 +140,13 @@ def create_pages(app):
         #label.grid()
 
         # Back button to return to main page
-        if name != "main":
-            Button(page, text="Back", command=lambda: frame_display(pages["main"])).grid(row = 0, column = 0)
+        #if name != "main":
+            #Button(page, text="Back", command=lambda: frame_display(pages["main"])).grid(row = 0, column = 0)
+
+        # Back button to return to main page
+        #if name != "main":
+            #Button(page, text = "Back", command = lambda p = pages["main"]: frame_display(p)).grid(row = 0, column = 0, 
+                    #sticky = "w", padx = 10, pady = 10)
 
     return pages
 
@@ -140,7 +181,8 @@ def buttons_frame(app, pages):
         ("Buy Vegetable", "buy"),
         ("Add Vegetable", "add"),
         ("Update Vegetable", "update"),
-        ("Delete Vegetable", "delete")
+        ("Delete Vegetable", "delete"),
+        ("Show Transactions", "transaction")
     ]
 
     for i, (text, page_name) in enumerate(buttons):
@@ -201,6 +243,7 @@ def main():
     vegetable_add_page(pages)
     vegetable_update_page(pages)
     vegetable_delete_page(pages)
+    transaction_list_page(pages)
 
     # Starting Program.
     app.mainloop()

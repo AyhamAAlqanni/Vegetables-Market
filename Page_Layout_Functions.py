@@ -5,6 +5,7 @@ from tkinter import messagebox
 from datetime import datetime
 from DataBase_Folder.DataBase_Functions import *
 import webbrowser
+from tkinter import ttk # Treeview.
 
 class PageFunctions:
 
@@ -27,6 +28,7 @@ class PageFunctions:
         self.quantity_entry = ""
         self.total_price_entry = ""
         self.total_price_input = 0
+        self.transactions = ""
 
 
     def fields(self):
@@ -122,18 +124,37 @@ class PageFunctions:
     def vegetables_list(self, row_number, column_number):
 
         # Scrollbar for usability
-        scrollbar = Scrollbar(self.frame)
-        scrollbar.grid(row = row_number, column = column_number + 3, rowspan = 6, sticky = "ns")
+        self.scrollbar = Scrollbar(self.frame)
+        self.scrollbar.grid(row = row_number, column = column_number + 3, rowspan = 6, sticky = "ns")
 
-        # Vegetables List (Listbox)
-        self.vegetables = Listbox(self.frame, height = 8, width = 60, border = 3, font = ("bold", 10), yscrollcommand = scrollbar.set)
-        self.vegetables.grid(row = row_number, column = column_number, columnspan = 3, rowspan = 6, padx = 20)
+        # Define columns for the treeview
+        columns = ("Vegetable#", "vegetable", "Supplier", "Price/lb", "Added Date")
 
-        scrollbar.config(command = self.vegetables.yview)
+        # Create Treeview
+        self.vegetables_tree = ttk.Treeview(self.frame, columns = columns, show = "headings", height = 7, yscrollcommand = self.scrollbar.set)
+        self.vegetables_tree.grid(row = row_number, column = column_number, columnspan = 3, rowspan = 6, padx = 20)
 
-        self.vegetables.bind("<<ListboxSelect>>", self.select_item)
+        self.scrollbar.config(command = self.vegetables_tree.yview)
+
+        # Set column headings
+        for col in columns:
+
+            self.vegetables_tree.heading(col, text = col)
+            self.vegetables_tree.column(col, width = 100, anchor = "center")
 
         self.refresh_vegetables_list()
+
+        self.vegetables_tree.bind("<<TreeviewSelect>>", self.select_item)
+
+        # Vegetables List (Listbox)
+        #self.vegetables = Listbox(self.frame, height = 8, width = 60, border = 3, font = ("bold", 10), yscrollcommand = scrollbar.set)
+        #self.vegetables.grid(row = row_number, column = column_number, columnspan = 3, rowspan = 6, padx = 20)
+
+        #scrollbar.config(command = self.vegetables.yview)
+
+        #self.vegetables.bind("<<ListboxSelect>>", self.select_item)
+
+        #self.refresh_vegetables_list()
 
         # Header row
         #self.vegetables.insert(END, f"{'#':<6} {'Name':<15} {'Supplier':<20} {'Price/lb':<10} {'Date':<15}")
@@ -141,12 +162,22 @@ class PageFunctions:
 
     def refresh_vegetables_list(self):
 
-        self.vegetables.delete(0, END)
+        # Clear existing rows
+        for item in self.vegetables_tree.get_children():
 
-        for item in get_vegetables():
+            self.vegetables_tree.delete(item)
+
+        # Insert updated data
+        for vegetable in get_vegetables():
+
+            self.vegetables_tree.insert("", "end", values = vegetable)
+
+        #self.vegetables.delete(0, END)
+
+        #for item in get_vegetables():
 
             # Data rows
-            self.vegetables.insert(END, f"{item[0]} {"-"} {item[1]} {item[2]} {item[3]} {item[4]}") #{item[2]} {item[3]} {item[4]}
+            #self.vegetables.insert(END, f"{item[0]} {"-"} {item[1]} {item[2]} {item[3]} {item[4]}") #{item[2]} {item[3]} {item[4]}
             #self.vegetables.insert(END, f"{item}") #{item[2]} {item[3]} {item[4]}
 
         # Sample row
@@ -212,15 +243,21 @@ class PageFunctions:
 
     def select_item(self, event):
 
-        #print("select")
-
         try:
 
             global selected_item
 
-            index = self.vegetables.curselection()[0] + 1
+            # Get selected row in the treeview
+            selected_row = self.vegetables_tree.focus()
+            values = self.vegetables_tree.item(selected_row, "values")
 
-            selected_item = get_single_vegetable(index)
+            if not values:
+                return  # No selection made
+            
+            #print(values)
+
+            # values is a tuple like: (id, name, supplier, price, date)
+            selected_item = get_single_vegetable(int(values[0]))  # Assuming values[0] is the ID
 
             self.vegetable_name_entry.delete(0, END)
             self.vegetable_name_entry.insert(END, selected_item[1])
@@ -235,12 +272,40 @@ class PageFunctions:
             self.date_entry.insert(END, selected_item[4])
 
         except IndexError:
-
             pass
 
         except AttributeError:
-
             pass
+
+        #print("select")
+
+        #try:
+
+            #global selected_item
+
+            #index = self.vegetables.curselection()[0] + 1
+
+            #selected_item = get_single_vegetable(index)
+
+            #self.vegetable_name_entry.delete(0, END)
+            #self.vegetable_name_entry.insert(END, selected_item[1])
+
+            #self.supplier_name_entry.delete(0, END)
+            #self.supplier_name_entry.insert(END, selected_item[2])
+
+            #self.price_entry.delete(0, END)
+            #self.price_entry.insert(END, selected_item[3])
+
+            #self.date_entry.delete(0, END)
+            #self.date_entry.insert(END, selected_item[4])
+
+        #except IndexError:
+
+            #pass
+
+        #except AttributeError:
+
+            #pass
 
             #parts_list.bind("<<ListboxSelect>>", select_item)
 
@@ -359,3 +424,38 @@ class PageFunctions:
         #self.total_price_entry.insert(END, total_price)
 
         #add_customer_transaction(transaction_number, customer_name, vegetable_name, supplier_name, quantity, total_price)
+
+
+    def transactions_list(self, row_number, column_number):
+
+        # Scrollbar
+        self.transactions_scrollbar = Scrollbar(self.frame)
+        self.transactions_scrollbar.grid(row = row_number, column = column_number + 3, rowspan = 6, sticky = "ns")
+
+        # Define columns for the treeview
+        columns = ("Transaction#", "Customer", "Vegetable", "Supplier", "Quantity", "Price", "Date")
+
+        # Create Treeview
+        self.transactions_tree = ttk.Treeview(self.frame, columns=columns, show='headings', height=8, yscrollcommand=self.transactions_scrollbar.set)
+        self.transactions_tree.grid(row = row_number, column = column_number, columnspan = 3, rowspan = 6, padx = 20)
+
+        self.transactions_scrollbar.config(command = self.transactions_tree.yview)
+
+        # Set column headings
+        for col in columns:
+
+            self.transactions_tree.heading(col, text = col)
+            self.transactions_tree.column(col, width = 100, anchor = "center")
+
+        self.refresh_transactions_list()
+
+    def refresh_transactions_list(self):
+
+        # Clear existing rows
+        for item in self.transactions_tree.get_children():
+
+            self.transactions_tree.delete(item)
+
+        # Insert updated data
+        for transaction in get_customers():
+            self.transactions_tree.insert("", "end", values = transaction) 
