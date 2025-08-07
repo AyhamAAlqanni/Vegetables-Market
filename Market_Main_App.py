@@ -9,7 +9,10 @@ def vegetable_list_page(pages):
 
     list_page = PageFunctions(pages, "list")
 
-    list_page.buttons("Refresh List", 2, 1, 20, "refresh")
+    list_page.fields()
+
+    list_page.buttons("Show Picture", 3, 0, 20, "show picture")
+    list_page.buttons("Refresh List", 3, 1, 20, "refresh")
 
     list_page.vegetables_list(4, 0)
 
