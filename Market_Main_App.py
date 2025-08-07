@@ -17,6 +17,19 @@ def vegetable_list_page(pages):
     list_page.vegetables_list(4, 0)
 
 
+def vegetable_buy_page(pages):
+
+    buy_page = PageFunctions(pages, "buy")
+
+    buy_page.buy_fields()
+
+    buy_page.buttons("Estimate Total", 3, 0, 20, "total price")
+    buy_page.buttons("Buy", 3, 1, 20, "buy")
+    buy_page.buttons("Refresh List", 3, 2, 20, "refresh")
+
+    buy_page.vegetables_list(4, 0)
+
+
 def vegetable_add_page(pages):
 
     add_page = PageFunctions(pages, "add")
@@ -81,7 +94,7 @@ def frame_display(frame):
 def create_pages(app):
     pages = {}
 
-    for name in ["main", "list", "add", "update", "delete"]:
+    for name in ["main", "list", "buy", "add", "update", "delete"]:
         page = Frame(app, bg="#e0ffe0")
         page.place(relwidth=1, relheight=1)  # Fill the entire window
         pages[name] = page
@@ -124,6 +137,7 @@ def buttons_frame(app, pages):
     # Buttons and their corresponding pages
     buttons = [
         ("Vegetables List", "list"),
+        ("Buy Vegetable", "buy"),
         ("Add Vegetable", "add"),
         ("Update Vegetable", "update"),
         ("Delete Vegetable", "delete")
@@ -183,6 +197,7 @@ def main():
     frame_display(pages["main"])
 
     vegetable_list_page(pages)
+    vegetable_buy_page(pages)
     vegetable_add_page(pages)
     vegetable_update_page(pages)
     vegetable_delete_page(pages)
