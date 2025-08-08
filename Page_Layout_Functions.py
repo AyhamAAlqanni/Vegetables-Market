@@ -14,11 +14,68 @@ class PageFunctions:
         # Create a frame to hold the buttons
         self.frame = Frame(pages[page_name], bg="#e0ffe0")
         self.frame.place(relx=0.5, rely=0.5, anchor=CENTER)
+
         self.label_style = {
             "font": ("Bold", 14),
             "background": "#e0ffe0",
             "foreground": "black"
         }
+
+        self.calendar_style = {
+            "width": 18, 
+            "background": "darkgreen", 
+            "foreground": "white", 
+            "borderwidth": 2,
+            "selectbackground": "#F9F990",   # Selected date background in calendar
+            "selectforeground": "black", # Selected date text
+            "headersbackground": "#75DA6E", # Day-of-week header background
+            "headersforeground": "#000000",# Day-of-week header text
+            "weekendbackground": "#53B64B",  # Weekend cell background
+            "weekendforeground": "#000000"      # Weekend cell text
+        }
+
+        self.button_style = {
+        "width": 15,
+        "bd": 2,                    # Border width
+        "relief": "raised",          # Border style (try: 'solid', 'groove', 'sunken', etc.)
+        "background": "#60CC80",    # Background color
+        "foreground": "black",          # Text color
+        "activebackground": "#9a1717",  # Hover color
+        "activeforeground": "white"
+        }
+
+        # Create a style object
+        self.style = ttk.Style()
+
+        # 1. Set the overall theme to something that allows custom colors
+        self.style.theme_use("default")  # Other options: 'clam', 'alt', 'classic'
+
+        # 2. Style the headings (header row)
+        self.style.configure(
+            "Treeview.Heading",
+            background="#4CAF50",  # Green header
+            foreground="black",    # White text
+            font=("Arial", 8, "bold"),
+            padding=[0, 5]  # Wider and taller header
+        )
+
+        # 3. Style the table cells
+        self.style.configure(
+            "Treeview",
+            background="white",
+            foreground="black",
+            rowheight=20,
+            fieldbackground="white",
+            font=("Arial", 10)
+        )
+
+        # 4. Add striped rows
+        self.style.map(
+            "Treeview",
+            background=[("selected", "#F9F990")],  # Yellow when selected 
+            foreground=[("selected", "black")]
+        )
+        
         self.vegetable_name_entry = ""
         self.supplier_name_entry = ""
         self.price_entry = ""
@@ -57,7 +114,7 @@ class PageFunctions:
         # Date Field.
         date_label = Label(self.frame, text = "Date", **self.label_style)
         date_label.grid(row = 2, column = 2)
-        self.date_entry = DateEntry(self.frame, width = 18, background = "darkblue", foreground = "white", borderwidth = 2)
+        self.date_entry = DateEntry(self.frame, **self.calendar_style, style = "Custom.DateEntry")
         self.date_entry.grid(row = 2, column = 3)
 
 
@@ -115,7 +172,7 @@ class PageFunctions:
                                 "total price" : self.total_price_button_handle}
 
         # Add Button.
-        add_button = Button(self.frame, text = button_name, width = 15, command = functions_dictionary[command])
+        add_button = Button(self.frame, text = button_name, command = functions_dictionary[command], **self.button_style)
         add_button.grid(row = row_number, column = column_number, pady = pady_number)
         add_button.bind("<Enter>", self.on_enter)
         add_button.bind("<Leave>", self.on_leave)
@@ -128,7 +185,7 @@ class PageFunctions:
         self.scrollbar.grid(row = row_number, column = column_number + 3, rowspan = 6, sticky = "ns")
 
         # Define columns for the treeview
-        columns = ("Vegetable#", "vegetable", "Supplier", "Price/lb", "Added Date")
+        columns = ("VEGETABLE#", "VEGETABLE", "SUPPLIER", "PRICE/LB", "ADDED DATE")
 
         # Create Treeview
         self.vegetables_tree = ttk.Treeview(self.frame, columns = columns, show = "headings", height = 7, yscrollcommand = self.scrollbar.set)
@@ -141,6 +198,18 @@ class PageFunctions:
 
             self.vegetables_tree.heading(col, text = col)
             self.vegetables_tree.column(col, width = 100, anchor = "center")
+
+        # Apply striped rows manually
+        self.vegetables_tree.tag_configure("oddrow", background = "#f2f2f2")  # Light gray
+        self.vegetables_tree.tag_configure("evenrow", background = "white")
+        self.vegetables_tree.tag_configure("hoverrow", background = "#F9F990")  # Hover highlight color
+
+        # Hover event binding
+        self.vegetables_tree.bind("<Motion>", self.vegetable_list_row_hover)
+        self.hovered_item = None  # Keep track of which row is currently hovered
+
+        self.vegetables_tree.selection_remove(self.vegetables_tree.selection())
+        self.vegetables_tree.focus("")
 
         self.refresh_vegetables_list()
 
@@ -167,21 +236,26 @@ class PageFunctions:
 
             self.vegetables_tree.delete(item)
 
+        # Insert updated data with alternating row colors
+        for i, vegetable in enumerate(get_vegetables()):
+
+            vegetable = list(vegetable)
+
+            vegetable[4] = vegetable[4].date().strftime("%m-%d-%y")
+
+            tag = "evenrow" if i % 2 == 0 else "oddrow"
+
+            self.vegetables_tree.insert("", "end", values = vegetable, tags=(tag,))
+
         # Insert updated data
-        for vegetable in get_vegetables():
+        #for vegetable in get_vegetables():
 
-            self.vegetables_tree.insert("", "end", values = vegetable)
+            #vegetable = list(vegetable)
 
-        #self.vegetables.delete(0, END)
+            #vegetable[4] = vegetable[4].date().strftime("%m-%d-%y")
 
-        #for item in get_vegetables():
+            #self.vegetables_tree.insert("", "end", values = vegetable)
 
-            # Data rows
-            #self.vegetables.insert(END, f"{item[0]} {"-"} {item[1]} {item[2]} {item[3]} {item[4]}") #{item[2]} {item[3]} {item[4]}
-            #self.vegetables.insert(END, f"{item}") #{item[2]} {item[3]} {item[4]}
-
-        # Sample row
-        # vegetables_list.insert(END, f"{'Tomato':<20} {'Green Farm':<20} {'2.50':<10} {'2025-08-02'}")
 
     def vegetables_list_counter(self):
 
@@ -224,11 +298,21 @@ class PageFunctions:
             return
 
         # Convert 'MM/DD/YYYY' or 'DD/MM/YYYY' to 'YYYY-MM-DD HH:MM:SS'
-        date = datetime.strptime(date, "%m/%d/%y").strftime("%Y-%m-%d") #%H:%M:%S
+        #date = datetime.strptime(date, "%m/%d/%y").strftime("%Y-%m-%d") #%H:%M:%S
+
+        # Convert selected date + current time to full timestamp
+        selected_date = datetime.strptime(self.date_entry.get(), "%m/%d/%y").date()
+        current_time = datetime.now().time()
+        full_datetime = datetime.combine(selected_date, current_time)
+
+        date = full_datetime.strftime("%Y-%m-%d %H:%M:%S")
 
         vegetable_number = self.vegetables_list_counter()
 
-        add_vegetable(vegetable_number, vegetable_name, supplier_name, float(price), date)
+        add_vegetable(vegetable_number, vegetable_name.capitalize(), supplier_name.capitalize(), float(price), date)
+
+        self.vegetables_tree.selection_remove(self.vegetables_tree.selection())
+        self.vegetables_tree.focus("")
 
         self.refresh_vegetables_list()
 
@@ -244,6 +328,18 @@ class PageFunctions:
     def select_item(self, event):
 
         try:
+
+            """ selected_row = self.vegetables_tree.focus()
+        
+            if not selected_row:  # No focus
+                return
+            
+            if not self.vegetables_tree.exists(selected_row):  # Item deleted
+                return
+
+            values = self.vegetables_tree.item(selected_row, "values")
+            if not values:
+                return """
 
             global selected_item
 
@@ -314,8 +410,11 @@ class PageFunctions:
 
         #print(selected_item[1])
 
-        update_vegetable(selected_item[0], self.vegetable_name_entry.get(), self.supplier_name_entry.get(), 
+        update_vegetable(selected_item[0], self.vegetable_name_entry.get().capitalize(), self.supplier_name_entry.get().capitalize(), 
                          self.price_entry.get(), self.date_entry.get())
+        
+        self.vegetables_tree.selection_remove(self.vegetables_tree.selection())
+        self.vegetables_tree.focus("")
         
         self.refresh_vegetables_list()
 
@@ -330,6 +429,9 @@ class PageFunctions:
     def delete_button_handle(self):
 
         delete_vegetable(selected_item[0])
+
+        self.vegetables_tree.selection_remove(self.vegetables_tree.selection())
+        self.vegetables_tree.focus("")
 
         self.refresh_vegetables_list()
 
@@ -417,7 +519,8 @@ class PageFunctions:
         f"Do you want to buy {quantity_value} lb of {vegetable_name} from {supplier_name} for a total of ${total_price:.2f}?")
 
         if confirm:
-            add_customer_transaction(transaction_number, customer_name, vegetable_name, supplier_name, quantity_value, total_price)
+            add_customer_transaction(transaction_number, customer_name.capitalize(), vegetable_name.capitalize(), 
+                                     supplier_name.capitalize(), float(quantity_value), float(total_price))
             messagebox.showinfo("Purchase Successful", "The transaction was completed successfully.")
 
         #self.total_price_entry.delete(0, END)
@@ -433,7 +536,7 @@ class PageFunctions:
         self.transactions_scrollbar.grid(row = row_number, column = column_number + 3, rowspan = 6, sticky = "ns")
 
         # Define columns for the treeview
-        columns = ("Transaction#", "Customer", "Vegetable", "Supplier", "Quantity", "Price", "Date")
+        columns = ("TRANS#", "CUSTOMER", "VEGETABLE", "SUPPLIER", "QUANTITY", "PRICE", "DATE")
 
         # Create Treeview
         self.transactions_tree = ttk.Treeview(self.frame, columns=columns, show='headings', height=8, yscrollcommand=self.transactions_scrollbar.set)
@@ -445,9 +548,19 @@ class PageFunctions:
         for col in columns:
 
             self.transactions_tree.heading(col, text = col)
-            self.transactions_tree.column(col, width = 100, anchor = "center")
+            self.transactions_tree.column(col, width = 80, anchor = "center")
+
+        # Apply striped rows manually
+        self.transactions_tree.tag_configure("oddrow", background = "#f2f2f2")  # Light gray
+        self.transactions_tree.tag_configure("evenrow", background = "white")
+        self.transactions_tree.tag_configure("hoverrow", background = "#F9F990")  # Hover highlight color
+
+        # Hover event binding
+        self.transactions_tree.bind("<Motion>", self.transaction_list_row_hover)
+        self.hovered_item = None  # Keep track of which row is currently hovered
 
         self.refresh_transactions_list()
+
 
     def refresh_transactions_list(self):
 
@@ -456,6 +569,78 @@ class PageFunctions:
 
             self.transactions_tree.delete(item)
 
-        # Insert updated data
-        for transaction in get_customers():
-            self.transactions_tree.insert("", "end", values = transaction) 
+        # Insert updated data with alternating row colors
+        for i, transaction in enumerate(get_customers()):
+
+            transaction = list(transaction)
+
+            transaction[6] = transaction[6].date().strftime("%m-%d-%y")
+
+            tag = "evenrow" if i % 2 == 0 else "oddrow"
+
+            self.transactions_tree.insert("", "end", values = transaction, tags=(tag,))
+
+            #transaction = list(transaction)
+
+            #transaction[6] = transaction[6].date().strftime("%m-%d-%y")
+
+            #self.transactions_tree.insert("", "end", values = transaction) 
+
+
+    def transaction_list_row_hover(self, event):
+
+        row_id = self.transactions_tree.identify_row(event.y)
+
+        if row_id != self.hovered_item:
+
+            # Restore the old row's original color
+            if self.hovered_item:
+
+                index = self.transactions_tree.index(self.hovered_item)
+                original_tag = "evenrow" if index % 2 == 0 else "oddrow"
+                self.transactions_tree.item(self.hovered_item, tags=(original_tag,))
+
+            # Apply hover highlight to the new row
+            if row_id:
+
+                self.transactions_tree.item(row_id, tags=("hoverrow",))
+
+            self.hovered_item = row_id
+
+
+    """ def vegetable_list_row_hover(self, event):
+
+        row_id = self.vegetables_tree.identify_row(event.y)
+
+        if row_id != self.hovered_item:
+
+            # Restore the old row's original color
+            if self.hovered_item:
+
+                index = self.vegetables_tree.index(self.hovered_item)
+                original_tag = "evenrow" if index % 2 == 0 else "oddrow"
+                self.vegetables_tree.item(self.hovered_item, tags=(original_tag,))
+
+            # Apply hover highlight to the new row
+            if row_id:
+                
+                self.vegetables_tree.item(row_id, tags=("hoverrow",))
+
+            self.hovered_item = row_id """
+    
+    def vegetable_list_row_hover(self, event):
+        
+        row_id = self.vegetables_tree.identify_row(event.y)
+
+        if row_id != self.hovered_item:
+            # Restore the old row's original color if it still exists
+            if self.hovered_item and self.vegetables_tree.exists(self.hovered_item):
+                index = self.vegetables_tree.index(self.hovered_item)
+                original_tag = "evenrow" if index % 2 == 0 else "oddrow"
+                self.vegetables_tree.item(self.hovered_item, tags=(original_tag,))
+
+            # Apply hover highlight to the new row if it exists
+            if row_id and self.vegetables_tree.exists(row_id):
+                self.vegetables_tree.item(row_id, tags=("hoverrow",))
+
+            self.hovered_item = row_id
