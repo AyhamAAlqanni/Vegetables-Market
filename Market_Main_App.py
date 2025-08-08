@@ -5,6 +5,25 @@ from tkinter import messagebox
 from Page_Layout_Functions import PageFunctions
 
 
+def back_button(pages, page_name):
+
+    button_style = {
+        "width": 5,
+        "bd": 2,                    # Border width
+        "relief": "raised",          # Border style (try: 'solid', 'groove', 'sunken', etc.)
+        "background": "#60CC80",    # Background color
+        "foreground": "black",          # Text color
+        "activebackground": "#9a1717",  # Hover color
+        "activeforeground": "white",
+    }
+
+    # Add back button to return to main page
+    back_button = Button(pages[page_name], text = "Back", command = lambda: frame_display(pages["main"]), **button_style)
+    back_button.grid(row = 0, column = 0, sticky = "w")
+    back_button.bind("<Enter>", on_enter)
+    back_button.bind("<Leave>", on_leave)
+
+
 def vegetable_list_page(pages):
 
     list_page = PageFunctions(pages, "list")
@@ -15,8 +34,7 @@ def vegetable_list_page(pages):
     list_page.buttons("Refresh List", 3, 1, 20, "refresh")
 
     # Add back button to return to main page
-    back_button = Button(pages["list"], text = "Back", command = lambda: frame_display(pages["main"]))
-    back_button.grid(row = 0, column = 0, sticky = "w")
+    back_button(pages, "list")
 
     list_page.vegetables_list(4, 0)
 
@@ -32,8 +50,7 @@ def vegetable_buy_page(pages):
     buy_page.buttons("Refresh List", 3, 2, 20, "refresh")
 
     # Add back button to return to main page
-    back_button = Button(pages["buy"], text = "Back", command = lambda: frame_display(pages["main"]))
-    back_button.grid(row = 0, column = 0, sticky = "w")
+    back_button(pages, "buy")
 
     buy_page.vegetables_list(4, 0)
 
@@ -49,8 +66,7 @@ def vegetable_add_page(pages):
     add_page.buttons("Refresh List", 3, 2, 0, "refresh")
 
     # Add back button to return to main page
-    back_button = Button(pages["add"], text = "Back", command = lambda: frame_display(pages["main"]))
-    back_button.grid(row = 0, column = 0, sticky = "w")
+    back_button(pages, "add")
 
     add_page.vegetables_list(4, 0)
 
@@ -67,8 +83,7 @@ def vegetable_update_page(pages):
     update_page.buttons("Refresh List", 3, 2, 0, "refresh")
 
     # Add back button to return to main page
-    back_button = Button(pages["update"], text = "Back", command = lambda: frame_display(pages["main"]))
-    back_button.grid(row = 0, column = 0, sticky = "w")
+    back_button(pages, "update")
 
     update_page.vegetables_list(4, 0)
 
@@ -85,8 +100,7 @@ def vegetable_delete_page(pages):
     delete_page.buttons("Refresh List", 3, 2, 0, "refresh")
 
     # Add back button to return to main page
-    back_button = Button(pages["delete"], text = "Back", command = lambda: frame_display(pages["main"]))
-    back_button.grid(row = 0, column = 0, sticky = "w")
+    back_button(pages, "delete")
 
     delete_page.vegetables_list(4, 0)
 
@@ -104,8 +118,7 @@ def transaction_list_page(pages):
     #list_page.buttons("Refresh List", 3, 1, 20, "refresh")
 
     # Add back button to return to main page
-    back_button = Button(pages["transaction"], text = "Back", command = lambda: frame_display(pages["main"]))
-    back_button.grid(row = 0, column = 0, sticky = "w")
+    back_button(pages, "transaction")
 
     transaction_list_page.transactions_list(4, 0)
 
