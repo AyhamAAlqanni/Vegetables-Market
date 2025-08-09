@@ -3,6 +3,7 @@
 from tkinter import *
 from tkinter import messagebox
 from Page_Layout_Functions import PageFunctions
+from PIL import Image, ImageTk  # pip install pillow
 
 
 def back_button(pages, page_name):
@@ -148,18 +149,21 @@ def create_pages(app):
         page.place(relwidth=1, relheight=1)  # Fill the entire window
         pages[name] = page
 
+        # --- Load background image ---
+        bg_image = Image.open("Pictures/Vegetable.jpg")  # your image file
+        bg_image = bg_image.resize((700, 350), Image.LANCZOS)  # match window size
+        bg_photo = ImageTk.PhotoImage(bg_image)
+
+        # Keep reference to avoid garbage collection
+        page.bg_photo = bg_photo  
+
+        # --- Place background ---
+        bg_label = Label(page, image=bg_photo)
+        bg_label.place(x=0, y=0, relwidth=1, relheight=1)
+
         # Simple label for each page
-        label = Label(page, text=f"This is the {name.capitalize()} Page", font=("Arial", 20), bg="white")
+        #label = Label(page, text=f"This is the {name.capitalize()} Page", font=("Arial", 20), bg="white")
         #label.grid()
-
-        # Back button to return to main page
-        #if name != "main":
-            #Button(page, text="Back", command=lambda: frame_display(pages["main"])).grid(row = 0, column = 0)
-
-        # Back button to return to main page
-        #if name != "main":
-            #Button(page, text = "Back", command = lambda p = pages["main"]: frame_display(p)).grid(row = 0, column = 0, 
-                    #sticky = "w", padx = 10, pady = 10)
 
     return pages
 
@@ -172,14 +176,14 @@ def buttons_frame(app, pages):
     # button_frame.place(relx=0.5, rely=0.5, anchor=CENTER)  # Center the frame
 
     # Create a frame to hold the buttons
-    button_frame = Frame(pages["main"], bg="#e0ffe0")
+    button_frame = Frame(pages["main"], bg="#e0ffe0") 
     button_frame.place(relx=0.5, rely=0.5, anchor=CENTER)
 
     # Common style for all buttons
     button_style = {
         "width": 20,
-        "bd": 5,                    # Border width
-        "relief": "raised",          # Border style (try: 'solid', 'groove', 'sunken', etc.)
+        "bd": 5,                   # Border width
+        "relief": "raised",          # Border style (try: 'solid', 'groove', 'sunken', etc.) 
         "background": "#60CC80",    # Background color
         "foreground": "black",          # Text color
         "activebackground": "#9a1717",  # Hover color
