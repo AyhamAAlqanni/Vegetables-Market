@@ -32,7 +32,7 @@ def vegetable_list_page(pages):
     list_page.fields()
 
     list_page.buttons("Show Picture", 3, 0, 20, "show picture")
-    list_page.buttons("Refresh List", 3, 1, 20, "refresh")
+    list_page.buttons("Refresh List", 3, 1, 20, "refresh vegetable")
 
     # Add back button to return to main page
     back_button(pages, "list")
@@ -48,7 +48,7 @@ def vegetable_buy_page(pages):
 
     buy_page.buttons("Estimate Total", 3, 0, 20, "total price")
     buy_page.buttons("Buy", 3, 1, 20, "buy")
-    buy_page.buttons("Refresh List", 3, 2, 20, "refresh")
+    buy_page.buttons("Refresh List", 3, 2, 20, "refresh vegetable")
 
     # Add back button to return to main page
     back_button(pages, "buy")
@@ -64,7 +64,7 @@ def vegetable_add_page(pages):
 
     add_page.buttons("Add Vegetable", 3, 0, 20, "add")
     add_page.buttons("Clear Fields", 3, 1, 0, "clear")
-    add_page.buttons("Refresh List", 3, 2, 0, "refresh")
+    add_page.buttons("Refresh List", 3, 2, 0, "refresh vegetable")
 
     # Add back button to return to main page
     back_button(pages, "add")
@@ -81,7 +81,7 @@ def vegetable_update_page(pages):
 
     update_page.buttons("Update Vegetable", 3, 0, 20, "update")
     update_page.buttons("Clear Fields", 3, 1, 0, "clear")
-    update_page.buttons("Refresh List", 3, 2, 0, "refresh")
+    update_page.buttons("Refresh List", 3, 2, 0, "refresh vegetable")
 
     # Add back button to return to main page
     back_button(pages, "update")
@@ -98,7 +98,7 @@ def vegetable_delete_page(pages):
 
     delete_page.buttons("Delete Vegetable", 3, 0, 20, "delete")
     delete_page.buttons("Clear Fields", 3, 1, 0, "clear")
-    delete_page.buttons("Refresh List", 3, 2, 0, "refresh")
+    delete_page.buttons("Refresh List", 3, 2, 0, "refresh vegetable")
 
     # Add back button to return to main page
     back_button(pages, "delete")
@@ -113,15 +113,16 @@ def transaction_list_page(pages):
 
     transaction_list_page = PageFunctions(pages, "transaction")
 
-    #list_page.fields()
+    transaction_list_page.transaction_fields()
 
-    #list_page.buttons("Show Picture", 3, 0, 20, "show picture")
-    #list_page.buttons("Refresh List", 3, 1, 20, "refresh")
+    transaction_list_page.buttons("Search", 3, 0, 20, "search")
+    transaction_list_page.buttons("Refresh List", 3, 1, 0, "refresh transaction")
+    transaction_list_page.buttons("Clear Fields", 3, 2, 0, "transactions clear")
 
     # Add back button to return to main page
     back_button(pages, "transaction")
 
-    transaction_list_page.transactions_list(4, 0)
+    transaction_list_page.transactions_list(5, 0)
 
 
 # Hover effect functions.

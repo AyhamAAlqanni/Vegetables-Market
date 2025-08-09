@@ -166,10 +166,13 @@ class PageFunctions:
                                 "clear" : self.clear_button_handle,
                                 "update" : self.update_button_handle,
                                 "delete" : self.delete_button_handle,
-                                "refresh" : self.refresh_vegetables_list,
+                                "refresh vegetable" : self.refresh_vegetables_list,
                                 "show picture" : self.picture_button_handle,
                                 "buy" : self.buy_button_handle,
-                                "total price" : self.total_price_button_handle}
+                                "total price" : self.total_price_button_handle,
+                                "search" : self.search_button_handle,
+                                "refresh transaction" : self.refresh_transactions_list,
+                                "transactions clear" : self.transaction_clear_button_handle}
 
         # Add Button.
         add_button = Button(self.frame, text = button_name, command = functions_dictionary[command], **self.button_style)
@@ -318,11 +321,17 @@ class PageFunctions:
 
 
     def clear_button_handle(self):
+
+        try:
         
-        self.vegetable_name_entry.delete(0, END)
-        self.supplier_name_entry.delete(0, END)
-        self.price_entry.delete(0, END)
-        self.date_entry.set_date(datetime.today())
+            self.vegetable_name_entry.delete(0, END)
+            self.supplier_name_entry.delete(0, END)
+            self.price_entry.delete(0, END)
+            self.date_entry.set_date(datetime.today())
+
+        except AttributeError:
+
+            pass
 
 
     def select_item(self, event):
@@ -539,8 +548,8 @@ class PageFunctions:
         columns = ("TRANS#", "CUSTOMER", "VEGETABLE", "SUPPLIER", "QUANTITY", "PRICE", "DATE")
 
         # Create Treeview
-        self.transactions_tree = ttk.Treeview(self.frame, columns=columns, show='headings', height=8, yscrollcommand=self.transactions_scrollbar.set)
-        self.transactions_tree.grid(row = row_number, column = column_number, columnspan = 3, rowspan = 6, padx = 20)
+        self.transactions_tree = ttk.Treeview(self.frame, columns=columns, show='headings', height=7, yscrollcommand=self.transactions_scrollbar.set)
+        self.transactions_tree.grid(row = row_number, column = column_number, columnspan = 3, rowspan = 6, padx = 20, pady = 5)
 
         self.transactions_scrollbar.config(command = self.transactions_tree.yview)
 
@@ -644,3 +653,99 @@ class PageFunctions:
                 self.vegetables_tree.item(row_id, tags=("hoverrow",))
 
             self.hovered_item = row_id
+
+
+    def transaction_fields(self):
+
+        # Customer Name Field.
+        customer_name_label = Label(self.frame, text = "Customer Name", pady = 20, **self.label_style)
+        customer_name_label.grid(row = 1, column = 0)
+        customer_name_input = StringVar()
+        self.customer_name_entry = Entry(self.frame, textvariable = customer_name_input)
+        self.customer_name_entry.grid(row = 1, column = 1)
+
+        # Vegetable Name Field.
+        vegetable_name_label = Label(self.frame, text = "Vegetable Name", pady = 20, **self.label_style)
+        vegetable_name_label.grid(row = 1, column = 2)
+        vegetable_name_input = StringVar()
+        self.vegetable_name_entry = Entry(self.frame, textvariable = vegetable_name_input)
+        self.vegetable_name_entry.grid(row = 1, column = 3)
+
+        # Supplier Name Field.
+        supplier_name_label = Label(self.frame, text = "Supplier Name", **self.label_style)
+        supplier_name_label.grid(row = 2, column = 0)
+        supplier_name_input = StringVar()
+        self.supplier_name_entry = Entry(self.frame, textvariable = supplier_name_input)
+        self.supplier_name_entry.grid(row = 2, column = 1)
+
+
+    def search_button_handle(self):
+
+        customer_name = self.customer_name_entry.get()
+        vegetable_name = self.vegetable_name_entry.get()
+        supplier_name = self.supplier_name_entry.get()
+
+        if customer_name != "" or vegetable_name != "" or supplier_name != "":
+
+            # Clear existing rows
+            for item in self.transactions_tree.get_children():
+
+                self.transactions_tree.delete(item)
+
+            if customer_name != "":
+
+                # Insert updated data with alternating row colors
+                for i, transaction in enumerate(get_customer_by_name(customer_name)):
+
+                    transaction = list(transaction)
+
+                    transaction[6] = transaction[6].date().strftime("%m-%d-%y")
+
+                    tag = "evenrow" if i % 2 == 0 else "oddrow"
+
+                    self.transactions_tree.insert("", "end", values = transaction, tags=(tag,))
+
+            if vegetable_name != "":
+
+                # Insert updated data with alternating row colors
+                for i, transaction in enumerate(get_customer_by_vegetable_name(vegetable_name)):
+
+                    transaction = list(transaction)
+
+                    transaction[6] = transaction[6].date().strftime("%m-%d-%y")
+
+                    tag = "evenrow" if i % 2 == 0 else "oddrow"
+
+                    self.transactions_tree.insert("", "end", values = transaction, tags=(tag,))
+
+            if supplier_name != "":
+
+                # Insert updated data with alternating row colors
+                for i, transaction in enumerate(get_customer_by_supplier_name(supplier_name)):
+
+                    transaction = list(transaction)
+
+                    transaction[6] = transaction[6].date().strftime("%m-%d-%y")
+
+                    tag = "evenrow" if i % 2 == 0 else "oddrow"
+
+                    self.transactions_tree.insert("", "end", values = transaction, tags=(tag,))
+
+        else:
+
+            messagebox.showerror("Required Fields!", "Please Include One Field At Least!")
+
+            return
+        
+
+    def transaction_clear_button_handle(self):
+
+        try:
+            
+            self.customer_name_entry.delete(0, END)
+            self.vegetable_name_entry.delete(0, END)
+            self.supplier_name_entry.delete(0, END)
+
+        except AttributeError:
+
+            pass

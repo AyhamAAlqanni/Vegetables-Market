@@ -122,6 +122,63 @@ def get_customers():
         print(f"Error Getting Customers: {err}")
 
 
+# Purpose: Fetches all customers entries, ordered by customer's name.
+# row[1] refers to the text column (since row[0] is transaction_id).
+def get_customer_by_name(customers_name):
+
+    try:
+
+        sql = ("SELECT * FROM customers WHERE customers_name IN (%s)")
+
+        cursor.execute(sql, (customers_name,))
+
+        result = cursor.fetchall()
+
+        return list(result)
+
+    except Error as err:
+
+        print(f"Error Getting Customer's Name: {err}")
+
+
+# Purpose: Fetches all customers entries, ordered by vegetable's name.
+# row[1] refers to the text column (since row[0] is transaction_id).
+def get_customer_by_vegetable_name(vegetable_name):
+
+    try:
+
+        sql = ("SELECT * FROM customers WHERE vegetable_name IN (%s)")
+
+        cursor.execute(sql, (vegetable_name,))
+
+        result = cursor.fetchall()
+
+        return list(result)
+
+    except Error as err:
+
+        print(f"Error Getting Vegetable's Name: {err}")
+
+
+# Purpose: Fetches all customers entries, ordered by supplier's name.
+# row[1] refers to the text column (since row[0] is transaction_id).
+def get_customer_by_supplier_name(supplier_name):
+
+    try:
+
+        sql = ("SELECT * FROM customers WHERE supplier_name IN (%s)")
+
+        cursor.execute(sql, (supplier_name,))
+
+        result = cursor.fetchall()
+
+        return list(result)
+
+    except Error as err:
+
+        print(f"Error Getting Supplier's Name: {err}")
+
+
 # Purpose: Adds a new row to the transactions table.
 """ def add_transaction(user_account_number, transaction_type, amount):
 
