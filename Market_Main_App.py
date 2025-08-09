@@ -1,9 +1,8 @@
 
 # "*" means importing everything from this module.
 from tkinter import *
-from tkinter import messagebox
 from Page_Layout_Functions import PageFunctions
-from PIL import Image, ImageTk  # pip install pillow
+from PIL import Image, ImageTk  
 
 
 def back_button(pages, page_name):
@@ -105,9 +104,6 @@ def vegetable_delete_page(pages):
 
     delete_page.vegetables_list(4, 0)
 
-    #add_page.add_button("Delete Vegetable", 3, 0, 20)
-    #add_page.add_button("Clear Fields", 3, 1, 0)
-
 
 def transaction_list_page(pages):
 
@@ -151,7 +147,7 @@ def create_pages(app):
         pages[name] = page
 
         # --- Load background image ---
-        bg_image = Image.open("Pictures/Vegetable.jpg")  # your image file
+        bg_image = Image.open("Pictures/Vegetable.jpg")  # Image file
         bg_image = bg_image.resize((700, 350), Image.LANCZOS)  # match window size
         bg_photo = ImageTk.PhotoImage(bg_image)
 
@@ -162,19 +158,11 @@ def create_pages(app):
         bg_label = Label(page, image=bg_photo)
         bg_label.place(x=0, y=0, relwidth=1, relheight=1)
 
-        # Simple label for each page
-        #label = Label(page, text=f"This is the {name.capitalize()} Page", font=("Arial", 20), bg="white")
-        #label.grid()
-
     return pages
 
 
 # Function to hold buttons inside a frame.
 def buttons_frame(app, pages):
-
-    # Create a frame to hold the buttons
-    # button_frame = Frame(app)
-    # button_frame.place(relx=0.5, rely=0.5, anchor=CENTER)  # Center the frame
 
     # Create a frame to hold the buttons
     button_frame = Frame(pages["main"], bg="#e0ffe0") 
@@ -209,31 +197,6 @@ def buttons_frame(app, pages):
         btn.bind("<Enter>", on_enter)
         btn.bind("<Leave>", on_leave)
 
-    # Add buttons to the frame (centered)
-    # Vegetables list button.
-    # vegetable_list_button = Button(button_frame, text="Vegetables List", **button_style)
-    # vegetable_list_button.grid(row=0, column=0, pady=5) 
-    # vegetable_list_button.bind("<Enter>", on_enter)
-    # vegetable_list_button.bind("<Leave>", on_leave)
-
-    # Add vegetable button.
-    # add_vegetable_button = Button(button_frame, text="Add Vegetable", **button_style)
-    # add_vegetable_button.grid(row=1, column=0, pady=5)
-    # add_vegetable_button.bind("<Enter>", on_enter)
-    # add_vegetable_button.bind("<Leave>", on_leave)
-
-    # Update vegetable button.
-    # update_vegetable_button = Button(button_frame, text="Update Vegetable", **button_style)
-    # update_vegetable_button.grid(row=2, column=0, pady=5)
-    # update_vegetable_button.bind("<Enter>", on_enter)
-    # update_vegetable_button.bind("<Leave>", on_leave)
-
-    # Delete vegetable button.
-    # delete_vegetable_button = Button(button_frame, text="Delete Vegetable", **button_style)
-    # delete_vegetable_button.grid(row=3, column=0, pady=5)
-    # delete_vegetable_button.bind("<Enter>", on_enter)
-    # delete_vegetable_button.bind("<Leave>", on_leave)
-
 
 # Main Function.
 def main():
@@ -244,8 +207,6 @@ def main():
     app.title("Vegetable Market")
     app.geometry("700x350")
     app.configure(background="#e0ffe0")  # Background color
-
-    # buttons_frame(app)
 
     # Create all pages
     pages = create_pages(app)

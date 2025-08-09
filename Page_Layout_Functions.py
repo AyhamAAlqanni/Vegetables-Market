@@ -218,19 +218,6 @@ class PageFunctions:
 
         self.vegetables_tree.bind("<<TreeviewSelect>>", self.select_item)
 
-        # Vegetables List (Listbox)
-        #self.vegetables = Listbox(self.frame, height = 8, width = 60, border = 3, font = ("bold", 10), yscrollcommand = scrollbar.set)
-        #self.vegetables.grid(row = row_number, column = column_number, columnspan = 3, rowspan = 6, padx = 20)
-
-        #scrollbar.config(command = self.vegetables.yview)
-
-        #self.vegetables.bind("<<ListboxSelect>>", self.select_item)
-
-        #self.refresh_vegetables_list()
-
-        # Header row
-        #self.vegetables.insert(END, f"{'#':<6} {'Name':<15} {'Supplier':<20} {'Price/lb':<10} {'Date':<15}")
-        #self.vegetables.insert(END, "*" * 80)  # Divider line
 
     def refresh_vegetables_list(self):
 
@@ -249,15 +236,6 @@ class PageFunctions:
             tag = "evenrow" if i % 2 == 0 else "oddrow"
 
             self.vegetables_tree.insert("", "end", values = vegetable, tags=(tag,))
-
-        # Insert updated data
-        #for vegetable in get_vegetables():
-
-            #vegetable = list(vegetable)
-
-            #vegetable[4] = vegetable[4].date().strftime("%m-%d-%y")
-
-            #self.vegetables_tree.insert("", "end", values = vegetable)
 
 
     def vegetables_list_counter(self):
@@ -300,9 +278,6 @@ class PageFunctions:
             
             return
 
-        # Convert 'MM/DD/YYYY' or 'DD/MM/YYYY' to 'YYYY-MM-DD HH:MM:SS'
-        #date = datetime.strptime(date, "%m/%d/%y").strftime("%Y-%m-%d") #%H:%M:%S
-
         # Convert selected date + current time to full timestamp
         selected_date = datetime.strptime(self.date_entry.get(), "%m/%d/%y").date()
         current_time = datetime.now().time()
@@ -338,18 +313,6 @@ class PageFunctions:
 
         try:
 
-            """ selected_row = self.vegetables_tree.focus()
-        
-            if not selected_row:  # No focus
-                return
-            
-            if not self.vegetables_tree.exists(selected_row):  # Item deleted
-                return
-
-            values = self.vegetables_tree.item(selected_row, "values")
-            if not values:
-                return """
-
             global selected_item
 
             # Get selected row in the treeview
@@ -358,11 +321,9 @@ class PageFunctions:
 
             if not values:
                 return  # No selection made
-            
-            #print(values)
 
             # values is a tuple like: (id, name, supplier, price, date)
-            selected_item = get_single_vegetable(int(values[0]))  # Assuming values[0] is the ID
+            selected_item = get_single_vegetable(int(values[0]))  
 
             self.vegetable_name_entry.delete(0, END)
             self.vegetable_name_entry.insert(END, selected_item[1])
@@ -382,42 +343,8 @@ class PageFunctions:
         except AttributeError:
             pass
 
-        #print("select")
-
-        #try:
-
-            #global selected_item
-
-            #index = self.vegetables.curselection()[0] + 1
-
-            #selected_item = get_single_vegetable(index)
-
-            #self.vegetable_name_entry.delete(0, END)
-            #self.vegetable_name_entry.insert(END, selected_item[1])
-
-            #self.supplier_name_entry.delete(0, END)
-            #self.supplier_name_entry.insert(END, selected_item[2])
-
-            #self.price_entry.delete(0, END)
-            #self.price_entry.insert(END, selected_item[3])
-
-            #self.date_entry.delete(0, END)
-            #self.date_entry.insert(END, selected_item[4])
-
-        #except IndexError:
-
-            #pass
-
-        #except AttributeError:
-
-            #pass
-
-            #parts_list.bind("<<ListboxSelect>>", select_item)
-
 
     def update_button_handle(self):
-
-        #print(selected_item[1])
 
         update_vegetable(selected_item[0], self.vegetable_name_entry.get().capitalize(), self.supplier_name_entry.get().capitalize(), 
                          self.price_entry.get(), self.date_entry.get())
@@ -427,13 +354,6 @@ class PageFunctions:
         
         self.refresh_vegetables_list()
 
-        #self.vegetables.bind("<<ListboxSelect>>", self.select_item)
-
-    #def update_item():
-
-    #db.update(selected_item[0], part_text.get(), customer_text.get(), retailer_text.get(), price_text.get())
-
-    #populate_list()
 
     def delete_button_handle(self):
 
@@ -447,7 +367,7 @@ class PageFunctions:
 
     def picture_button_handle(self):
 
-        url = "https://www.pexels.com/search/" + selected_item[1] # https://google.com/search?q=
+        url = "https://www.pexels.com/search/" + selected_item[1] 
 
         webbrowser.get().open(url)
 
@@ -532,11 +452,6 @@ class PageFunctions:
                                      supplier_name.capitalize(), float(quantity_value), float(total_price))
             messagebox.showinfo("Purchase Successful", "The transaction was completed successfully.")
 
-        #self.total_price_entry.delete(0, END)
-        #self.total_price_entry.insert(END, total_price)
-
-        #add_customer_transaction(transaction_number, customer_name, vegetable_name, supplier_name, quantity, total_price)
-
 
     def transactions_list(self, row_number, column_number):
 
@@ -587,13 +502,7 @@ class PageFunctions:
 
             tag = "evenrow" if i % 2 == 0 else "oddrow"
 
-            self.transactions_tree.insert("", "end", values = transaction, tags=(tag,))
-
-            #transaction = list(transaction)
-
-            #transaction[6] = transaction[6].date().strftime("%m-%d-%y")
-
-            #self.transactions_tree.insert("", "end", values = transaction) 
+            self.transactions_tree.insert("", "end", values = transaction, tags=(tag,)) 
 
 
     def transaction_list_row_hover(self, event):
@@ -616,26 +525,6 @@ class PageFunctions:
 
             self.hovered_item = row_id
 
-
-    """ def vegetable_list_row_hover(self, event):
-
-        row_id = self.vegetables_tree.identify_row(event.y)
-
-        if row_id != self.hovered_item:
-
-            # Restore the old row's original color
-            if self.hovered_item:
-
-                index = self.vegetables_tree.index(self.hovered_item)
-                original_tag = "evenrow" if index % 2 == 0 else "oddrow"
-                self.vegetables_tree.item(self.hovered_item, tags=(original_tag,))
-
-            # Apply hover highlight to the new row
-            if row_id:
-                
-                self.vegetables_tree.item(row_id, tags=("hoverrow",))
-
-            self.hovered_item = row_id """
     
     def vegetable_list_row_hover(self, event):
         
